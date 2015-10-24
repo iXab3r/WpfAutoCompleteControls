@@ -65,6 +65,8 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Converters\ExceptionToMessageConverter.cs" />
+    <Compile Include="Converters\NullNotNullToVisibilityConverter.cs" />
     <Compile Include="Editors\AutoCompleteTextBox.cs" />
     <Compile Include="Editors\AutoCompleteTextBox.Designer.cs" />
     <Compile Include="Editors\ISuggestionProvider.cs" />

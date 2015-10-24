@@ -54,10 +54,15 @@
                                                  ScrollViewer.VerticalScrollBarVisibility="Auto"
                                                  ItemsSource="{Binding Path=SuggestionsList, RelativeSource={RelativeSource Mode=TemplatedParent}}"
                                                  ItemContainerStyle="{TemplateBinding SuggestionItemStyle}"
-                                                 ItemContainerStyleSelector="{TemplateBinding SuggestionItemStyleSelector}"/>
+                                                 ItemContainerStyleSelector="{TemplateBinding SuggestionItemStyleSelector}" />
                                         
-                                        <Label x:Name="PART_WarningNoMatches" Content="No Matches" Visibility="Collapsed"/>
-                                        <Border Visibility="{Binding Path=IsLoading, RelativeSource={RelativeSource Mode=TemplatedParent}, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                                        <Label x:Name="PART_WarningNoMatches" 
+                                               Content="No Matches" 
+                                               Visibility="Collapsed"/>
+                                        
+                                        <Label x:Name="PART_WarningLoading" 
+                                               Content="Loading..." 
+                                               Visibility="Collapsed"/>
                                     </Grid>
                                 </Border>
                             </Popup>
@@ -78,6 +83,11 @@
                         
                         <Trigger Property="IsFocused" SourceName="PART_Editor" Value="False">
                             <Setter Property="IsOpen" Value="False" TargetName="PART_Popup"/>
+                        </Trigger>
+
+                        <Trigger Property="IsLoading" Value="True">
+                            <Setter Property="Visibility" Value="Collapsed" TargetName="PART_Selector"/>
+                            <Setter Property="Visibility" Value="Visible" TargetName="PART_WarningLoading"/>
                         </Trigger>
 
                     </ControlTemplate.Triggers>

@@ -1,4 +1,7 @@
 <ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:converters="clr-namespace:WpfAutoCompleteControls.Converters">
     <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+    <converters:NullNotNullToVisibilityConverter x:Key="NullNotNullToVisibilityConverter" />
+    <converters:ExceptionToMessageConverter x:Key="ExceptionToMessageConverter" />
 </ResourceDictionary>

@@ -3,6 +3,7 @@
     using System;
     using System.Collections;
     using System.Linq;
+    using System.Reflection;
     using System.Threading;
     using System.Windows.Media;
 
@@ -12,30 +13,36 @@
     {
         private readonly ColorInfo[] knownColors;
 
-        private readonly TimeSpan Delay = TimeSpan.FromSeconds(5);
+        private readonly TimeSpan Delay = TimeSpan.FromSeconds(1);
 
         public SuggestionProvider()
         {
-            var colorsList = typeof (System.Windows.SystemColors)
+            var colorsList = typeof (Colors)
                 .GetProperties()
                 .Where(x => x.PropertyType == typeof(Color))
                 .Where(x => x.CanRead)
                 .Select(x => (Color)x.GetValue(null))
                 .ToArray();
 
-            knownColors = colorsList.Select(x => new ColorInfo() {Name = x.ToString(), Color = x}).ToArray();
+            var colorProperties = typeof (Colors).GetProperties();
+
+            knownColors = colorsList.Select(x => new ColorInfo()
+            {
+                Name = colorProperties.FirstOrDefault(p => Color.AreClose((Color)p.GetValue(null), x))?.Name ?? "Unknown",
+                Color = x
+            }).ToArray();
         }
 
         public IEnumerable GetSuggestions(string filter)
         {
             if (string.IsNullOrWhiteSpace(filter))
             {
-                return null;
+                return new object[0];
             }
 
             Thread.Sleep(Delay);
 
-            return knownColors.Take(10);
+            return knownColors.Where(x => x.Name.Contains(filter));
         }
     }
 

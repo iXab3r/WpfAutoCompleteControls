@@ -19,7 +19,11 @@
                                 <ContentPresenter.ContentTemplate>
                                     <DataTemplate DataType="testApp:ColorInfo">
                                         <StackPanel Orientation="Horizontal">
-                                            <Ellipse Margin="5,0" Fill="{Binding Color}" Width="10" Height="10" Stroke="Black" StrokeThickness="1"/>
+                                            <Ellipse Margin="5,0" Width="10" Height="10" Stroke="Black" StrokeThickness="1">
+                                                <Ellipse.Fill>
+                                                    <SolidColorBrush Color="{Binding Color}"/>
+                                                </Ellipse.Fill>
+                                            </Ellipse>
                                             <TextBlock Text="{Binding Name}"/>
                                         </StackPanel>
                                     </DataTemplate>

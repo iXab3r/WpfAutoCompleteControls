@@ -1,7 +1,9 @@
 ﻿namespace WpfAutoCompleteControls.Editors
 {
     using System;
+    using System.Collections;
     using System.Collections.ObjectModel;
+    using System.Diagnostics;
     using System.Linq;
     using System.Reactive.Concurrency;
     using System.Reactive.Linq;
@@ -69,24 +71,33 @@
             var textChanged = Observable
                 .FromEventPattern<TextChangedEventHandler, TextChangedEventArgs>(x => editor.TextChanged += x, x => editor.TextChanged -= x)
                 .Select(x => ((TextBox)x.Sender).Text)
-                .DistinctUntilChanged();
-
-            textChanged.Subscribe(text => IsDropDownOpen = text?.Length > 0 );
+                .DistinctUntilChanged()
+                .Publish();
 
             textChanged
-                .DistinctUntilChanged()
+                .Subscribe(text => IsDropDownOpen = text?.Length > 0 );
+
+            textChanged
                 .Do(_ => IsLoading = true)
-                .ObserveOn(TaskPoolScheduler.Default)
-                .Select(x => provider.GetSuggestions(x))
+                .Select(x => Observable.Start(() => provider.GetSuggestions(x), TaskPoolScheduler.Default))
+                .Switch()
+                .Take(1)
                 .ObserveOn(DispatcherScheduler.Current)
                 .Finally(() => IsLoading = false)
-                .Select(x => new ObservableCollection<object>(x.OfType<object>()))
-                .Subscribe(newSuggestionsList => SuggestionsList = newSuggestionsList, OnError);
+                .Subscribe(HandleNextPackOfResultsFromSuggestionProvider, HandleErrorFromSuggestionProvider);
+
+            textChanged.Connect();
         }
 
-        private void OnError(Exception exception)
+        private void HandleNextPackOfResultsFromSuggestionProvider(IEnumerable suggestions)
         {
-            
+            var typedSuggestions = suggestions.OfType<object>();
+            SuggestionsList = new ObservableCollection<object>(typedSuggestions);
+        }
+
+        private void HandleErrorFromSuggestionProvider(Exception exception)
+        {
+            SuggestionsList = null;
         }
     }
 }
