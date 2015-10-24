@@ -33,7 +33,7 @@
                                                Visibility="{Binding Path=Text, ElementName=PART_Editor, Converter={StaticResource InvertedNullNotNullToVisibilityConverter}}"/>
                                     
                                     <TextBox x:Name="PART_Editor" 
-                                             Text="{Binding Path=Text, RelativeSource={RelativeSource Mode=TemplatedParent}, Mode=TwoWay}"
+                                             Text="{Binding Path=Text, RelativeSource={RelativeSource Mode=TemplatedParent}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                              Background="{x:Null}"
                                              BorderThickness="0"
                                              Foreground="{TemplateBinding Foreground}"
