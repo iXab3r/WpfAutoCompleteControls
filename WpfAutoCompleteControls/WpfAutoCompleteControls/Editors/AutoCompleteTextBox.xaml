@@ -52,9 +52,7 @@
                                                  BorderThickness="0"
                                                  ScrollViewer.HorizontalScrollBarVisibility="Auto"
                                                  ScrollViewer.VerticalScrollBarVisibility="Auto"
-                                                 ItemsSource="{Binding Path=SuggestionsList, RelativeSource={RelativeSource Mode=TemplatedParent}}"
-                                                 ItemContainerStyle="{TemplateBinding SuggestionItemStyle}"
-                                                 ItemContainerStyleSelector="{TemplateBinding SuggestionItemStyleSelector}" />
+                                                 ItemsSource="{Binding Path=SuggestionsList, RelativeSource={RelativeSource Mode=TemplatedParent}}" />
                                         
                                         <Label x:Name="PART_WarningNoMatches" 
                                                Content="No Matches" 

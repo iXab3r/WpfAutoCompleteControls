@@ -8,11 +8,12 @@
     using System.Reactive.Concurrency;
     using System.Reactive.Linq;
     using System.Threading.Tasks;
-    using System.Windows;
     using System.Windows.Controls;
     using System.Windows.Controls.Primitives;
     using System.Windows.Data;
     using System.Windows.Threading;
+
+    using RxUtils;
 
     public partial class AutoCompleteTextBox 
     {
@@ -40,6 +41,12 @@
             set { SetValue(TextProperty, value); }
         }
 
+        public string DisplayMemberPath
+        {
+            get { return (string)GetValue(DisplayMemberPathProperty); }
+            set { SetValue(DisplayMemberPathProperty, value); }
+        }
+
         internal ObservableCollection<object> SuggestionsList {
             get { return (ObservableCollection<object>) GetValue(SuggestionsListProperty); }
             set { SetValue(SuggestionsListProperty, value); }
@@ -51,6 +58,7 @@
 
             var editor = Template.FindName(PartEditor, this) as TextBox;
             var popup = Template.FindName(PartPopup, this) as Popup;
+            var itemsSelector = Template.FindName(PartSelector, this) as Selector;
 
             if (editor == null)
             {
@@ -62,16 +70,28 @@
                 throw new ApplicationException($"Could not find popup({typeof(Popup)}), name '{PartPopup}'");
             }
 
+            if (itemsSelector == null)
+            {
+                throw new ApplicationException($"Could not find popup({typeof(Selector)}), name '{PartSelector}'");
+            }
+
             var provider = Provider;
             if (provider == null)
             {
                 return;
             }
 
-            var textChanged = Observable
+            var binding = new Binding(DisplayMemberPath);
+            var bindingEvaluator = new BindingEvaluator(binding);
+
+            var suspendableTextChanged = Observable
                 .FromEventPattern<TextChangedEventHandler, TextChangedEventArgs>(x => editor.TextChanged += x, x => editor.TextChanged -= x)
-                .Select(x => ((TextBox)x.Sender).Text)
+                .Select(x => (TextBox) x.Sender)
+                .Select(x => x.Text)
                 .DistinctUntilChanged()
+                .ToSuspendable();
+
+            var textChanged = suspendableTextChanged
                 .Publish();
 
             textChanged
@@ -79,25 +99,45 @@
 
             textChanged
                 .Do(_ => IsLoading = true)
-                .Select(x => Observable.Start(() => provider.GetSuggestions(x), TaskPoolScheduler.Default))
+                .Do(x => Trace.WriteLine($"Resolving '{x}'..."))
+                .Select(x => Observable.Start(() => provider.GetSuggestions(x), TaskPoolScheduler.Default).Catch<IEnumerable,Exception>(HandleSuggestionProviderException))
                 .Switch()
-                .Take(1)
                 .ObserveOn(DispatcherScheduler.Current)
-                .Finally(() => IsLoading = false)
-                .Subscribe(HandleNextPackOfResultsFromSuggestionProvider, HandleErrorFromSuggestionProvider);
+                .Do(_ => IsLoading = false)
+                .Subscribe(HandleNextPackOfResultsFromSuggestionProvider);
+
+            var selectedItemChanged = Observable
+                .FromEventPattern<SelectionChangedEventHandler, SelectionChangedEventArgs>(x => itemsSelector.SelectionChanged += x, x => itemsSelector.SelectionChanged -= x)
+                .Select(x => (Selector)x.Sender)
+                .Select(x => x.SelectedItem)
+                .DistinctUntilChanged()
+                .Publish();
+
+            selectedItemChanged
+                .Where(x => x != null)
+                .Select(x => bindingEvaluator.Evaluate(x)?.ToString())
+                .Subscribe(
+                    newValue =>
+                    {
+                        using (suspendableTextChanged.Suspend())
+                        {
+                            Text = newValue;
+                        }
+                    });
 
             textChanged.Connect();
+            selectedItemChanged.Connect();
+        }
+
+        private IObservable<IEnumerable> HandleSuggestionProviderException(Exception exception)
+        {
+            return Observable.Return(new object[0]);
         }
 
         private void HandleNextPackOfResultsFromSuggestionProvider(IEnumerable suggestions)
         {
             var typedSuggestions = suggestions.OfType<object>();
             SuggestionsList = new ObservableCollection<object>(typedSuggestions);
-        }
-
-        private void HandleErrorFromSuggestionProvider(Exception exception)
-        {
-            SuggestionsList = null;
-        }
+        }   
     }
 }

@@ -8,50 +8,6 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="350" Width="525" WindowStartupLocation="CenterScreen" >
 
-    <Window.Resources>
-        <Style TargetType="ListBoxItem"
-           x:Key="SuggestionItemStyle">
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="ListBoxItem">
-                        <Border x:Name="ContentBorder" >
-                            <ContentPresenter>
-                                <ContentPresenter.ContentTemplate>
-                                    <DataTemplate DataType="testApp:ColorInfo">
-                                        <StackPanel Orientation="Horizontal">
-                                            <Ellipse Margin="5,0" Width="10" Height="10" Stroke="Black" StrokeThickness="1">
-                                                <Ellipse.Fill>
-                                                    <SolidColorBrush Color="{Binding Color}"/>
-                                                </Ellipse.Fill>
-                                            </Ellipse>
-                                            <TextBlock Text="{Binding Name}"/>
-                                        </StackPanel>
-                                    </DataTemplate>
-                                </ContentPresenter.ContentTemplate>
-                            </ContentPresenter>
-                        </Border>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsMouseOver"
-                                 Value="True">
-                                <Setter Property="Background"
-                                    TargetName="ContentBorder"
-                                    Value="{x:Static SystemColors.HighlightBrush}" />
-                                <Setter Property="IsSelected"
-                                    Value="True" />
-                            </Trigger>
-                            <Trigger Property="IsSelected"
-                                 Value="True">
-                                <Setter Property="Background"
-                                    TargetName="ContentBorder"
-                                    Value="{x:Static SystemColors.AppWorkspaceBrush}" />
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-    </Window.Resources>
-
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="30"/>
@@ -63,7 +19,20 @@
                                      Background="Black" Foreground="White"
                                      BorderBrush="Red" BorderThickness="1"
                                      FontSize="15"
-                                     SuggestionItemStyle="{StaticResource SuggestionItemStyle}">
+                                     DisplayMemberPath="Name">
+            
+            <editors:AutoCompleteTextBox.ItemTemplate>
+                <DataTemplate DataType="testApp:ColorInfo">
+                    <StackPanel Orientation="Horizontal">
+                        <Ellipse Margin="5,0" Width="10" Height="10" Stroke="Black" StrokeThickness="1">
+                            <Ellipse.Fill>
+                                <SolidColorBrush Color="{Binding Color}"/>
+                            </Ellipse.Fill>
+                        </Ellipse>
+                        <TextBlock Text="{Binding Name}"/>
+                    </StackPanel>
+                </DataTemplate>
+            </editors:AutoCompleteTextBox.ItemTemplate>
             
             <editors:AutoCompleteTextBox.Provider>
                 <testApp:SuggestionProvider/>

@@ -11,7 +11,6 @@
     {
         public const string PartEditor = "PART_Editor";
         public const string PartPopup = "PART_Popup";
-
         public const string PartSelector = "PART_Selector";
 
         public static readonly DependencyProperty IsDropDownOpenProperty = DependencyProperty.Register(
@@ -32,11 +31,11 @@
             typeof(AutoCompleteTextBox),
             new FrameworkPropertyMetadata(null));
 
-        public static readonly DependencyProperty ItemTemplateSelectorProperty =
-            DependencyProperty.Register(
-                "ItemTemplateSelector",
-                typeof(DataTemplateSelector),
-                typeof(AutoCompleteTextBox));
+        public static readonly DependencyProperty ItemTemplateSelectorProperty = DependencyProperty.Register(
+            "ItemTemplateSelector",
+            typeof(DataTemplateSelector),
+            typeof(AutoCompleteTextBox),
+            new FrameworkPropertyMetadata(null));
 
         public static readonly DependencyProperty ProviderProperty = DependencyProperty.Register(
             "Provider",
@@ -44,33 +43,39 @@
             typeof(AutoCompleteTextBox),
             new FrameworkPropertyMetadata(null));
 
-        public static readonly DependencyProperty TextProperty = DependencyProperty.Register("Text", typeof(string),
-            typeof(AutoCompleteTextBox), new FrameworkPropertyMetadata(string.Empty));
+        public static readonly DependencyProperty TextProperty = DependencyProperty.Register(
+            "Text", 
+            typeof(string),
+            typeof(AutoCompleteTextBox), 
+            new FrameworkPropertyMetadata(string.Empty));
 
-        public static readonly DependencyProperty SuggestionsListProperty = DependencyProperty.Register("SuggestionsList", typeof(ObservableCollection<object>),
-            typeof(AutoCompleteTextBox), new FrameworkPropertyMetadata(null));
+        public static readonly DependencyProperty DisplayMemberPathProperty = DependencyProperty.Register(
+            "DisplayMemberPathProperty", 
+            typeof(string),
+            typeof(AutoCompleteTextBox), 
+            new FrameworkPropertyMetadata(null));
 
-        public static readonly DependencyProperty SuggestionItemStyleProperty = DependencyProperty.Register("SuggestionItemStyle", typeof(Style),
-           typeof(AutoCompleteTextBox), new FrameworkPropertyMetadata(null));
+        public static readonly DependencyProperty SuggestionsListProperty = DependencyProperty.Register(
+           "SuggestionsList",
+           typeof(ObservableCollection<object>),
+           typeof(AutoCompleteTextBox),
+           new FrameworkPropertyMetadata(null));
 
-        public static readonly DependencyProperty SuggestionItemStyleSelectorProperty = DependencyProperty.Register("SuggestionItemStyleSelector", typeof(StyleSelector),
-           typeof(AutoCompleteTextBox), new FrameworkPropertyMetadata(null));
-        
         static AutoCompleteTextBox()
         {
             DefaultStyleKeyProperty.OverrideMetadata(typeof(AutoCompleteTextBox), new FrameworkPropertyMetadata(typeof(AutoCompleteTextBox)));
         }
 
-        public Style SuggestionItemStyle
+        public DataTemplate ItemTemplate
         {
-            get { return (Style) GetValue(SuggestionItemStyleProperty); }
-            set { SetValue(SuggestionItemStyleProperty, value); }
+            get { return (DataTemplate) GetValue(ItemTemplateProperty); }
+            set { SetValue(ItemTemplateProperty, value); }
         }
 
-        public StyleSelector SuggestionItemStyleSelector
+        public DataTemplateSelector ItemTemplateSelector
         {
-            get { return (StyleSelector)GetValue(SuggestionItemStyleSelectorProperty); }
-            set { SetValue(SuggestionItemStyleSelectorProperty, value); }
+            get { return (DataTemplateSelector) GetValue(ItemTemplateSelectorProperty); }
+            set { SetValue(ItemTemplateSelectorProperty, value); }
         }
     }
 }
