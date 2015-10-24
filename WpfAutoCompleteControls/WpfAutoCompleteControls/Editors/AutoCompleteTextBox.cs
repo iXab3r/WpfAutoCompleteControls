@@ -92,15 +92,19 @@
                 .Select(x => x.Text)
                 .DistinctUntilChanged()
                 .ToSuspendable();
-
             var textChanged = suspendableTextChanged.Publish();
-            
+
+            var selectedItemChanged = Observable
+                .FromEventPattern<SelectionChangedEventHandler, EventArgs>(x => itemsSelector.SelectionChanged += x, x => itemsSelector.SelectionChanged -= x)
+                .Select(x => itemsSelector.SelectedItem)
+                .DistinctUntilChanged()
+                .Publish();
+
             var suspendableCurrentItemChanged = Observable
                 .FromEventPattern<EventHandler, EventArgs>(x => itemsSelector.Items.CurrentChanged += x, x => itemsSelector.Items.CurrentChanged -= x)
                 .Select(x => itemsSelector.Items.CurrentItem)
                 .DistinctUntilChanged()
                 .ToSuspendable();
-
             var currentItemChanged = suspendableCurrentItemChanged.Publish();
 
             textChanged
@@ -132,10 +136,16 @@
             Observable.Merge(
                     Observable.FromEventPattern<KeyEventHandler, KeyEventArgs>(x => editor.PreviewKeyDown += x, x => editor.PreviewKeyDown -= x),
                     Observable.FromEventPattern<KeyEventHandler, KeyEventArgs>(x => itemsSelector.PreviewKeyDown += x, x => itemsSelector.PreviewKeyDown -= x))
+                .Where(x => IsDropDownOpen)
                 .Subscribe((x) => ItemsSelectorOnPreviewKeyDownHandleCommit(itemsSelector, x.EventArgs));
 
+            Observable.FromEventPattern<MouseButtonEventHandler, MouseEventArgs>(x => itemsSelector.PreviewMouseDown += x, x => itemsSelector.PreviewMouseDown -= x)
+                .Where(x => IsDropDownOpen)
+                .Select(_ => selectedItemChanged.Take(1).Subscribe(() => CommitSelection(itemsSelector)))
+                .Subscribe();
+           
             textChanged.Connect();
-            currentItemChanged.Connect();
+            selectedItemChanged.Connect();
             currentItemChanged.Connect();
         }
 
@@ -167,16 +177,17 @@
 
         private void ItemsSelectorOnPreviewKeyDownHandleCommit(Selector itemsSelector, KeyEventArgs keyEventArgs)
         {
-            if (!IsDropDownOpen)
-            {
-                return;
-            }
             if (keyEventArgs.Key == Key.Tab || keyEventArgs.Key == Key.Enter)
             {
-                IsDropDownOpen = false;
-                itemsSelector.Items.MoveCurrentTo(null);
-                itemsSelector.Items.MoveCurrentTo(itemsSelector.SelectedItem);
+                CommitSelection(itemsSelector);
             }
+        }
+
+        private void CommitSelection(Selector itemsSelector)
+        {
+            IsDropDownOpen = false;
+            itemsSelector.Items.MoveCurrentTo(null);
+            itemsSelector.Items.MoveCurrentTo(itemsSelector.SelectedItem);
         }
 
         private IObservable<IEnumerable> HandleSuggestionProviderException(Exception exception)

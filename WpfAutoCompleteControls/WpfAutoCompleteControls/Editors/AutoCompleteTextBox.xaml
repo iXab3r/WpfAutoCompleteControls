@@ -8,6 +8,7 @@
 
     <Style TargetType="local:AutoCompleteTextBox">
         <Setter Property="Focusable" Value="False" />
+        <Setter Property="BorderBrush" Value="{x:Static SystemColors.ActiveBorderBrush}" />
         <Setter Property="BorderThickness" Value="1" />
         <Setter Property="Validation.ErrorTemplate"  Value="{x:Null}"/>
         <Setter Property="Template">
@@ -35,7 +36,6 @@
                                              Text="{Binding Path=Text, RelativeSource={RelativeSource Mode=TemplatedParent}, Mode=TwoWay}"
                                              Background="{x:Null}"
                                              BorderThickness="0"
-                                             BorderBrush="{x:Null}"
                                              Foreground="{TemplateBinding Foreground}"
                                              HorizontalAlignment="Stretch"
                                              VerticalAlignment="Center"/>
@@ -46,22 +46,19 @@
                                    IsOpen="{Binding Path=IsDropDownOpen, RelativeSource={RelativeSource Mode=TemplatedParent},Mode=TwoWay}"
                                    HorizontalOffset="0"
                                    MinHeight="25"
-                                   MaxHeight="600"
+                                   MaxHeight="400"
                                    MinWidth="{TemplateBinding ActualWidth}"
                                    AllowsTransparency="True"
                                    PopupAnimation="Slide"
                                    StaysOpen="False"
                                    Focusable="False">
                                 <Border BorderThickness="{TemplateBinding BorderThickness}"
-                                        BorderBrush="{TemplateBinding BorderBrush}"
-                                        CornerRadius="5"
-                                        Padding="2">
+                                        BorderBrush="{TemplateBinding BorderBrush}">
                                     <Grid>
                                         <ListBox x:Name="PART_Selector"
                                                  ItemTemplate="{TemplateBinding ItemTemplate}"
                                                  ItemTemplateSelector="{TemplateBinding ItemTemplateSelector}"
                                                  Focusable="False"
-                                                 BorderThickness="0"
                                                  ScrollViewer.HorizontalScrollBarVisibility="Auto"
                                                  ScrollViewer.VerticalScrollBarVisibility="Auto"
                                                  ItemsSource="{Binding Path=SuggestionsList, RelativeSource={RelativeSource Mode=TemplatedParent}}" />

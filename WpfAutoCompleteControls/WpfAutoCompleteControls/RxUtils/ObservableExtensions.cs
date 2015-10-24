@@ -20,5 +20,10 @@
                     }
                 });
         }
+
+        public static IDisposable Subscribe<TThis>(this IObservable<TThis> observable, Action onNext)
+        {
+            return observable.Subscribe(_ => onNext());
+        }
     }
 }
