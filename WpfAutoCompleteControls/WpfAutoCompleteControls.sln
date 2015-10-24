@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpfAutoCompleteControls", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestApp", "TestApp\TestApp.csproj", "{E09F0E5B-8558-4005-AFBE-3646B954CB7B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpfAutoCompleteControlsTests", "WpfAutoCompleteControlsTests\WpfAutoCompleteControlsTests.csproj", "{D7A0776B-C7D5-4B21-8097-4F031320B29D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{E09F0E5B-8558-4005-AFBE-3646B954CB7B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E09F0E5B-8558-4005-AFBE-3646B954CB7B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E09F0E5B-8558-4005-AFBE-3646B954CB7B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D7A0776B-C7D5-4B21-8097-4F031320B29D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D7A0776B-C7D5-4B21-8097-4F031320B29D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D7A0776B-C7D5-4B21-8097-4F031320B29D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D7A0776B-C7D5-4B21-8097-4F031320B29D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
