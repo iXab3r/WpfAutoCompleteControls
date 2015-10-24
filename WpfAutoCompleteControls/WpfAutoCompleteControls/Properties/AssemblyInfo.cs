@@ -1,5 +1,4 @@
 ﻿using System.Reflection;
-using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Markup;
@@ -8,11 +7,11 @@ using System.Windows.Markup;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("WpfAutoCompleteControls")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("WPF RX-based AutoComplete TextBox/ComboBox https://github.com/iXab3r/WpfAutoCompleteControls")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("iXab3r")]
 [assembly: AssemblyProduct("WpfAutoCompleteControls")]
-[assembly: AssemblyCopyright("Copyright ©  2015")]
+[assembly: AssemblyCopyright("Copyright © 2015")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
