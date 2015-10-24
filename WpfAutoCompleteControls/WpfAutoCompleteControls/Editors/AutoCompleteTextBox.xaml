@@ -9,7 +9,6 @@
     <Style TargetType="local:AutoCompleteTextBox">
         <Setter Property="Focusable" Value="False" />
         <Setter Property="BorderThickness" Value="1" />
-        <Setter Property="BorderBrush" Value="Gray" />
         <Setter Property="Validation.ErrorTemplate"  Value="{x:Null}"/>
         <Setter Property="Template">
             <Setter.Value>
@@ -65,8 +64,7 @@
                                                  BorderThickness="0"
                                                  ScrollViewer.HorizontalScrollBarVisibility="Auto"
                                                  ScrollViewer.VerticalScrollBarVisibility="Auto"
-                                                 ItemsSource="{Binding Path=SuggestionsList, RelativeSource={RelativeSource Mode=TemplatedParent}}" 
-                                                 />
+                                                 ItemsSource="{Binding Path=SuggestionsList, RelativeSource={RelativeSource Mode=TemplatedParent}}" />
                                         
                                         <Label x:Name="PART_WarningNoMatches" 
                                                Content="No Matches" 

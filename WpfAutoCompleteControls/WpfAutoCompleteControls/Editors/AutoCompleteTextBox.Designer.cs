@@ -67,6 +67,12 @@
            typeof(AutoCompleteTextBox),
            new FrameworkPropertyMetadata(null));
 
+        public static readonly DependencyProperty DelayProperty = DependencyProperty.Register(
+            "Delay", 
+            typeof(int), 
+            typeof(AutoCompleteTextBox),
+            new FrameworkPropertyMetadata(200));
+
         static AutoCompleteTextBox()
         {
             DefaultStyleKeyProperty.OverrideMetadata(typeof(AutoCompleteTextBox), new FrameworkPropertyMetadata(typeof(AutoCompleteTextBox)));
@@ -88,6 +94,12 @@
         {
             get { return (string) GetValue(WatermarkProperty); }
             set { SetValue(WatermarkProperty, value); }
+        }
+
+        public int Delay
+        {
+            get { return (int) GetValue(DelayProperty); }
+            set { SetValue(DelayProperty, value); }
         }
     }
 }

@@ -108,7 +108,7 @@
 
             textChanged
                 .Do(_ => IsLoading = true)
-                .Do(x => Trace.WriteLine($"Resolving '{x}'..."))
+                .Throttle(TimeSpan.FromMilliseconds(Delay))
                 .Select(x => Observable.Start(() => provider.GetSuggestions(x), TaskPoolScheduler.Default).Catch<IEnumerable, Exception>(HandleSuggestionProviderException))
                 .Switch()
                 .ObserveOn(DispatcherScheduler.Current)
