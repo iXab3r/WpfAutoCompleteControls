@@ -21,12 +21,25 @@
                         <Grid>
                             <DockPanel>
                                 <Grid>
+                                    <TextBlock x:Name="PART_Watermark" 
+                                               Text="{TemplateBinding Watermark}" 
+                                               Background="{x:Null}"
+                                               Focusable="False"
+                                               TextTrimming="CharacterEllipsis"
+                                               VerticalAlignment="Center"
+                                               HorizontalAlignment="Stretch"
+                                               Opacity="0.5"
+                                               Margin="5, 0"
+                                               Visibility="{Binding Path=Text, ElementName=PART_Editor, Converter={StaticResource InvertedNullNotNullToVisibilityConverter}}"/>
+                                    
                                     <TextBox x:Name="PART_Editor" 
                                              Text="{Binding Path=Text, RelativeSource={RelativeSource Mode=TemplatedParent}, Mode=TwoWay}"
-                                             HorizontalAlignment="Stretch"
                                              Background="{x:Null}"
+                                             BorderThickness="0"
+                                             BorderBrush="{x:Null}"
                                              Foreground="{TemplateBinding Foreground}"
-                                             VerticalAlignment="Stretch"/>
+                                             HorizontalAlignment="Stretch"
+                                             VerticalAlignment="Center"/>
                                 </Grid>
                             </DockPanel>
 
@@ -87,6 +100,23 @@
                         <Trigger Property="IsLoading" Value="True">
                             <Setter Property="Visibility" Value="Collapsed" TargetName="PART_Selector"/>
                             <Setter Property="Visibility" Value="Visible" TargetName="PART_WarningLoading"/>
+                        </Trigger>
+
+                        <Trigger Property="IsFocused" SourceName="PART_Editor" Value="True">
+                            <Trigger.EnterActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation To="0.1" Storyboard.TargetName="PART_Watermark" Storyboard.TargetProperty="Opacity"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </Trigger.EnterActions>
+                            <Trigger.ExitActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation To="0.5" Storyboard.TargetName="PART_Watermark" Storyboard.TargetProperty="Opacity"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </Trigger.ExitActions>
                         </Trigger>
 
                     </ControlTemplate.Triggers>

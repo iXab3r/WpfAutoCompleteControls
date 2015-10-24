@@ -49,8 +49,14 @@
             typeof(AutoCompleteTextBox), 
             new FrameworkPropertyMetadata(string.Empty));
 
+        public static readonly DependencyProperty WatermarkProperty = DependencyProperty.Register(
+            "Watermark",
+            typeof(string),
+            typeof(AutoCompleteTextBox),
+            new FrameworkPropertyMetadata(null));
+
         public static readonly DependencyProperty DisplayMemberPathProperty = DependencyProperty.Register(
-            "DisplayMemberPathProperty", 
+            "DisplayMemberPath", 
             typeof(string),
             typeof(AutoCompleteTextBox), 
             new FrameworkPropertyMetadata(null));
@@ -76,6 +82,12 @@
         {
             get { return (DataTemplateSelector) GetValue(ItemTemplateSelectorProperty); }
             set { SetValue(ItemTemplateSelectorProperty, value); }
+        }
+
+        public string Watermark
+        {
+            get { return (string) GetValue(WatermarkProperty); }
+            set { SetValue(WatermarkProperty, value); }
         }
     }
 }

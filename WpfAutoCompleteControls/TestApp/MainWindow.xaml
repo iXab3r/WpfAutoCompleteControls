@@ -19,6 +19,7 @@
                                      Background="LightGray" Foreground="Black"
                                      BorderBrush="Red" BorderThickness="1"
                                      FontSize="15"
+                                     Watermark="start typing to get matches"
                                      DisplayMemberPath="Name">
             
             <editors:AutoCompleteTextBox.ItemTemplate>

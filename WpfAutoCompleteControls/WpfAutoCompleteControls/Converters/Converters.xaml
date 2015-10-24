@@ -3,5 +3,6 @@
                     xmlns:converters="clr-namespace:WpfAutoCompleteControls.Converters">
     <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
     <converters:NullNotNullToVisibilityConverter x:Key="NullNotNullToVisibilityConverter" />
+    <converters:NullNotNullToVisibilityConverter x:Key="InvertedNullNotNullToVisibilityConverter" IsInverted="True" />
     <converters:ExceptionToMessageConverter x:Key="ExceptionToMessageConverter" />
 </ResourceDictionary>
