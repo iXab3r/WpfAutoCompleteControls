@@ -11,11 +11,12 @@
     using System.Windows.Controls;
     using System.Windows.Controls.Primitives;
     using System.Windows.Data;
+    using System.Windows.Input;
     using System.Windows.Threading;
 
     using RxUtils;
 
-    public partial class AutoCompleteTextBox 
+    public partial class AutoCompleteTextBox
     {
         public bool IsDropDownOpen
         {
@@ -47,10 +48,11 @@
             set { SetValue(DisplayMemberPathProperty, value); }
         }
 
-        internal ObservableCollection<object> SuggestionsList {
-            get { return (ObservableCollection<object>) GetValue(SuggestionsListProperty); }
+        internal ObservableCollection<object> SuggestionsList
+        {
+            get { return (ObservableCollection<object>)GetValue(SuggestionsListProperty); }
             set { SetValue(SuggestionsListProperty, value); }
-        } 
+        }
 
         public override void OnApplyTemplate()
         {
@@ -86,40 +88,95 @@
 
             var suspendableTextChanged = Observable
                 .FromEventPattern<TextChangedEventHandler, TextChangedEventArgs>(x => editor.TextChanged += x, x => editor.TextChanged -= x)
-                .Select(x => (TextBox) x.Sender)
+                .Select(x => (TextBox)x.Sender)
                 .Select(x => x.Text)
                 .DistinctUntilChanged()
                 .ToSuspendable();
 
-            var textChanged = suspendableTextChanged
-                .Publish();
+            var textChanged = suspendableTextChanged.Publish();
+            
+            var suspendableCurrentItemChanged = Observable
+                .FromEventPattern<EventHandler, EventArgs>(x => itemsSelector.Items.CurrentChanged += x, x => itemsSelector.Items.CurrentChanged -= x)
+                .Select(x => itemsSelector.Items.CurrentItem)
+                .DistinctUntilChanged()
+                .ToSuspendable();
+
+            var currentItemChanged = suspendableCurrentItemChanged.Publish();
 
             textChanged
-                .Subscribe(text => IsDropDownOpen = text?.Length > 0 );
+                .Subscribe(text => IsDropDownOpen = text?.Length > 0);
 
             textChanged
                 .Do(_ => IsLoading = true)
                 .Do(x => Trace.WriteLine($"Resolving '{x}'..."))
-                .Select(x => Observable.Start(() => provider.GetSuggestions(x), TaskPoolScheduler.Default).Catch<IEnumerable,Exception>(HandleSuggestionProviderException))
+                .Select(x => Observable.Start(() => provider.GetSuggestions(x), TaskPoolScheduler.Default).Catch<IEnumerable, Exception>(HandleSuggestionProviderException))
                 .Switch()
                 .ObserveOn(DispatcherScheduler.Current)
                 .Do(_ => IsLoading = false)
-                .Subscribe(HandleNextPackOfResultsFromSuggestionProvider);
+                .Subscribe(HandleNextPackOfResultsFromSuggestionProvider, suspendableCurrentItemChanged);
 
-            var selectedItemChanged = Observable
-                .FromEventPattern<SelectionChangedEventHandler, SelectionChangedEventArgs>(x => itemsSelector.SelectionChanged += x, x => itemsSelector.SelectionChanged -= x)
-                .Select(x => (Selector)x.Sender)
-                .Select(x => x.SelectedItem)
-                .DistinctUntilChanged()
-                .Publish();
-
-            selectedItemChanged
+            currentItemChanged
                 .Where(x => x != null)
                 .Select(x => bindingEvaluator.Evaluate(x)?.ToString())
-                .Subscribe(newValue => Text = newValue, suspendableTextChanged);
+                .Subscribe(newValue => 
+                {
+                    editor.Text = newValue; 
+                    editor.CaretIndex = editor.Text?.Length ?? 0;
+                }, suspendableTextChanged);
+
+            Observable.Merge(
+                    Observable.FromEventPattern<KeyEventHandler, KeyEventArgs>(x => editor.PreviewKeyDown += x, x => editor.PreviewKeyDown -= x),
+                    Observable.FromEventPattern<KeyEventHandler, KeyEventArgs>(x => itemsSelector.PreviewKeyDown += x, x => itemsSelector.PreviewKeyDown -= x))
+                .Subscribe((x) => ItemsSelectorOnPreviewKeyDown(itemsSelector, x.EventArgs));
+
+            Observable.Merge(
+                    Observable.FromEventPattern<KeyEventHandler, KeyEventArgs>(x => editor.PreviewKeyDown += x, x => editor.PreviewKeyDown -= x),
+                    Observable.FromEventPattern<KeyEventHandler, KeyEventArgs>(x => itemsSelector.PreviewKeyDown += x, x => itemsSelector.PreviewKeyDown -= x))
+                .Subscribe((x) => ItemsSelectorOnPreviewKeyDownHandleCommit(itemsSelector, x.EventArgs));
 
             textChanged.Connect();
-            selectedItemChanged.Connect();
+            currentItemChanged.Connect();
+            currentItemChanged.Connect();
+        }
+
+        private void ItemsSelectorOnPreviewKeyDown(Selector itemsSelector, KeyEventArgs keyEventArgs)
+        {
+            if (!IsDropDownOpen)
+            {
+                if (keyEventArgs.Key == Key.Down || keyEventArgs.Key == Key.Up)
+                {
+                    IsDropDownOpen = true;
+                }
+            }
+            else
+            {
+                if (keyEventArgs.Key == Key.Down)
+                {
+                    IncrementSelection(itemsSelector);
+                }
+                else if (keyEventArgs.Key == Key.Up)
+                {
+                    DecrementSelection(itemsSelector);
+                }
+                else if (keyEventArgs.Key == Key.Escape)
+                {
+                    IsDropDownOpen = false;
+                }
+            }
+        }
+
+        private void ItemsSelectorOnPreviewKeyDownHandleCommit(Selector itemsSelector, KeyEventArgs keyEventArgs)
+        {
+            if (!IsDropDownOpen)
+            {
+                return;
+            }
+            if (keyEventArgs.Key == Key.Tab || keyEventArgs.Key == Key.Enter)
+            {
+                IsDropDownOpen = false;
+                itemsSelector.Items.MoveCurrentTo(null);
+                itemsSelector.Items.MoveCurrentTo(itemsSelector.SelectedItem);
+            }
         }
 
         private IObservable<IEnumerable> HandleSuggestionProviderException(Exception exception)
@@ -131,6 +188,24 @@
         {
             var typedSuggestions = suggestions.OfType<object>();
             SuggestionsList = new ObservableCollection<object>(typedSuggestions);
-        }   
+        }
+
+        private void IncrementSelection(Selector itemsSelector)
+        {
+            if (itemsSelector.Items == null || !itemsSelector.HasItems || itemsSelector.Items.Count < itemsSelector.SelectedIndex)
+            {
+                return;
+            }
+            itemsSelector.SelectedIndex++;
+        }
+
+        private void DecrementSelection(Selector itemsSelector)
+        {
+            if (itemsSelector.Items == null || !itemsSelector.HasItems || itemsSelector.SelectedIndex <= 0)
+            {
+                return;
+            }
+            itemsSelector.SelectedIndex--;
+        }
     }
 }
