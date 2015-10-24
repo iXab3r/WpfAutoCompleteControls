@@ -116,14 +116,7 @@
             selectedItemChanged
                 .Where(x => x != null)
                 .Select(x => bindingEvaluator.Evaluate(x)?.ToString())
-                .Subscribe(
-                    newValue =>
-                    {
-                        using (suspendableTextChanged.Suspend())
-                        {
-                            Text = newValue;
-                        }
-                    });
+                .Subscribe(newValue => Text = newValue, suspendableTextChanged);
 
             textChanged.Connect();
             selectedItemChanged.Connect();

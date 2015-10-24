@@ -32,10 +32,10 @@
 
                             <Popup x:Name="PART_Popup"
                                    IsOpen="{Binding Path=IsDropDownOpen, RelativeSource={RelativeSource Mode=TemplatedParent},Mode=TwoWay}"
-                                   Width="{TemplateBinding ActualWidth}"
                                    HorizontalOffset="0"
                                    MinHeight="25"
                                    MaxHeight="600"
+                                   MinWidth="{TemplateBinding ActualWidth}"
                                    AllowsTransparency="True"
                                    PopupAnimation="Slide"
                                    StaysOpen="False"

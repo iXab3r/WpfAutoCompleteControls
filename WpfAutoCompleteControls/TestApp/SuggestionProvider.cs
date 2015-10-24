@@ -42,7 +42,9 @@
 
             Thread.Sleep(Delay);
 
-            return knownColors.Where(x => x.Name.Contains(filter));
+            filter = filter.Trim();
+            return knownColors
+                .Where(x => x.Name.IndexOf(filter, StringComparison.OrdinalIgnoreCase) >= 0);
         }
     }
 
