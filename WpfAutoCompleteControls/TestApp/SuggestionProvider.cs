@@ -35,12 +35,12 @@
 
         public IEnumerable GetSuggestions(string filter)
         {
+            Thread.Sleep(Delay);
+
             if (string.IsNullOrWhiteSpace(filter))
             {
-                return new object[0];
+                return knownColors;
             }
-
-            Thread.Sleep(Delay);
 
             filter = filter.Trim();
             return knownColors

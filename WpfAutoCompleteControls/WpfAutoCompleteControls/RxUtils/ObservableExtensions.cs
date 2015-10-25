@@ -1,6 +1,7 @@
 ﻿namespace WpfAutoCompleteControls.RxUtils
 {
     using System;
+    using System.Reactive.Linq;
 
     internal static class ObservableExtensions
     {
@@ -24,6 +25,11 @@
         public static IDisposable Subscribe<TThis>(this IObservable<TThis> observable, Action onNext)
         {
             return observable.Subscribe(_ => onNext());
+        }
+
+        public static IObservable<TThis> Do<TThis>(this IObservable<TThis> observable, Action onNext)
+        {
+            return observable.Do(_ => onNext());
         }
     }
 }

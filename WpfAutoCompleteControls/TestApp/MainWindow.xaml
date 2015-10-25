@@ -8,59 +8,115 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="350" Width="525" WindowStartupLocation="CenterScreen" >
 
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="30"/>
-            <RowDefinition Height="*"/>
-        </Grid.RowDefinitions>
-        
-        <editors:AutoCompleteTextBox x:Name="AutoCompleteTextBox"
-                                     Height="30" Width="150" 
+    <TabControl>
+        <TabItem Header="TextBox">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="30"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <editors:AutoCompleteTextBox 
+                                     Height="30" Width="200" 
                                      FontSize="15"
                                      Watermark="start typing to get matches"
                                      DisplayMemberPath="Name">
-            
-            <editors:AutoCompleteTextBox.ItemTemplate>
-                <DataTemplate DataType="testApp:ColorInfo">
-                    <StackPanel Orientation="Horizontal">
-                        <Ellipse Margin="5,0" Width="10" Height="10" Stroke="Black" StrokeThickness="1">
-                            <Ellipse.Fill>
-                                <SolidColorBrush Color="{Binding Color}"/>
-                            </Ellipse.Fill>
-                        </Ellipse>
-                        <TextBlock Text="{Binding Name}"/>
-                    </StackPanel>
-                </DataTemplate>
-            </editors:AutoCompleteTextBox.ItemTemplate>
-            
-            <editors:AutoCompleteTextBox.Provider>
-                <testApp:SuggestionProvider/>
-            </editors:AutoCompleteTextBox.Provider>
-        </editors:AutoCompleteTextBox>
 
-        <StackPanel Grid.Row="1" Orientation="Vertical">
-            <TextBlock>
-                <TextBlock.Inlines>
-                    <Run Text=".Text: "/>
-                    <Run Text="{Binding ElementName=AutoCompleteTextBox, Path=Text, UpdateSourceTrigger=PropertyChanged}"/>
-                </TextBlock.Inlines>
-            </TextBlock>
+                    <editors:AutoCompleteTextBox.ItemTemplate>
+                        <DataTemplate DataType="testApp:ColorInfo">
+                            <StackPanel Orientation="Horizontal">
+                                <Ellipse Margin="5,0" Width="10" Height="10" Stroke="Black" StrokeThickness="1">
+                                    <Ellipse.Fill>
+                                        <SolidColorBrush Color="{Binding Color}"/>
+                                    </Ellipse.Fill>
+                                </Ellipse>
+                                <TextBlock Text="{Binding Name}"/>
+                            </StackPanel>
+                        </DataTemplate>
+                    </editors:AutoCompleteTextBox.ItemTemplate>
 
-            <TextBlock>
-                <TextBlock.Inlines>
-                    <Run Text=".IsDropDownOpen: "/>
-                    <Run Text="{Binding ElementName=AutoCompleteTextBox, Path=IsDropDownOpen, UpdateSourceTrigger=PropertyChanged}"/>
-                </TextBlock.Inlines>
-            </TextBlock>
-            
-            <TextBox/>
+                    <editors:AutoCompleteTextBox.Provider>
+                        <testApp:SuggestionProvider/>
+                    </editors:AutoCompleteTextBox.Provider>
+                </editors:AutoCompleteTextBox>
 
-            <editors:AutoCompleteTextBox >
-                <editors:AutoCompleteTextBox.Provider>
-                    <testApp:BadSuggestionProvider/>
-                </editors:AutoCompleteTextBox.Provider>
-            </editors:AutoCompleteTextBox>
-        </StackPanel>
-       
-    </Grid>
+                <StackPanel Grid.Row="1" Orientation="Vertical">
+                    <TextBlock>
+                        <TextBlock.Inlines>
+                            <Run Text=".Text: "/>
+                            <Run Text="{Binding ElementName=AutoCompleteTextBox, Path=Text, UpdateSourceTrigger=PropertyChanged}"/>
+                        </TextBlock.Inlines>
+                    </TextBlock>
+
+                    <TextBlock>
+                        <TextBlock.Inlines>
+                            <Run Text=".IsDropDownOpen: "/>
+                            <Run Text="{Binding ElementName=AutoCompleteTextBox, Path=IsDropDownOpen, UpdateSourceTrigger=PropertyChanged}"/>
+                        </TextBlock.Inlines>
+                    </TextBlock>
+
+                    <TextBox/>
+
+                    <editors:AutoCompleteTextBox >
+                        <editors:AutoCompleteTextBox.Provider>
+                            <testApp:BadSuggestionProvider/>
+                        </editors:AutoCompleteTextBox.Provider>
+                    </editors:AutoCompleteTextBox>
+                </StackPanel>
+
+            </Grid>
+        </TabItem>
+
+        <TabItem Header="ComboBox">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="30"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <editors:AutoCompleteTextBox 
+                                     Height="30" Width="200" 
+                                     FontSize="15"
+                                     Watermark="start typing to get matches"
+                                     DisplayMemberPath="Name">
+
+                    <editors:AutoCompleteTextBox.ItemTemplate>
+                        <DataTemplate DataType="testApp:ColorInfo">
+                            <StackPanel Orientation="Horizontal">
+                                <Ellipse Margin="5,0" Width="10" Height="10" Stroke="Black" StrokeThickness="1">
+                                    <Ellipse.Fill>
+                                        <SolidColorBrush Color="{Binding Color}"/>
+                                    </Ellipse.Fill>
+                                </Ellipse>
+                                <TextBlock Text="{Binding Name}"/>
+                            </StackPanel>
+                        </DataTemplate>
+                    </editors:AutoCompleteTextBox.ItemTemplate>
+
+                    <editors:AutoCompleteTextBox.Provider>
+                        <testApp:SuggestionProvider/>
+                    </editors:AutoCompleteTextBox.Provider>
+                </editors:AutoCompleteTextBox>
+
+                <StackPanel Grid.Row="1" Orientation="Vertical">
+                    <TextBlock>
+                        <TextBlock.Inlines>
+                            <Run Text=".Text: "/>
+                            <Run Text="{Binding ElementName=AutoCompleteTextBox, Path=Text, UpdateSourceTrigger=PropertyChanged}"/>
+                        </TextBlock.Inlines>
+                    </TextBlock>
+
+                    <TextBlock>
+                        <TextBlock.Inlines>
+                            <Run Text=".IsDropDownOpen: "/>
+                            <Run Text="{Binding ElementName=AutoCompleteTextBox, Path=IsDropDownOpen, UpdateSourceTrigger=PropertyChanged}"/>
+                        </TextBlock.Inlines>
+                    </TextBlock>
+                    <TextBox/>
+                </StackPanel>
+
+            </Grid>
+        </TabItem>
+    </TabControl>
+    
 </Window>

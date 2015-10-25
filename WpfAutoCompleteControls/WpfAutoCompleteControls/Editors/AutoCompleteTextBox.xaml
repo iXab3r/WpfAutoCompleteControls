@@ -29,7 +29,12 @@
                         <Grid>
                             <DockPanel Margin="0">
                                 <Grid>
-                                    <TextBlock x:Name="PART_Watermark" 
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    
+                                    <TextBlock x:Name="PART_Watermark" Grid.Column="0"
                                                Text="{TemplateBinding Watermark}" 
                                                Background="{x:Null}"
                                                Focusable="False"
@@ -38,9 +43,9 @@
                                                HorizontalAlignment="Stretch"
                                                Opacity="0.5"
                                                Margin="5, 0"
-                                               Visibility="{Binding Path=Text, ElementName=PART_Editor, Converter={StaticResource InvertedNullNotNullToVisibilityConverter}}"/>
-                                    
-                                    <TextBox x:Name="PART_Editor" 
+                                               Visibility="{Binding Path=Text, ElementName=PART_Editor, Converter={StaticResource InvertedNullToVisibilityConverter}}"/>
+
+                                    <TextBox x:Name="PART_Editor" Grid.Column="0"
                                              Text="{Binding Path=Text, RelativeSource={RelativeSource Mode=TemplatedParent}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                              Background="{x:Null}"
                                              BorderThickness="0"
@@ -134,7 +139,6 @@
                                 </BeginStoryboard>
                             </Trigger.ExitActions>
                         </Trigger>
-
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>

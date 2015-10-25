@@ -75,15 +75,16 @@
   <ItemGroup>
     <Compile Include="Behaviors\KeepSelectionInViewBehavior.cs" />
     <Compile Include="Converters\ExceptionToMessageConverter.cs" />
-    <Compile Include="Converters\NullNotNullToVisibilityConverter.cs" />
+    <Compile Include="Converters\NullToVisibilityConverter.cs" />
     <Compile Include="Editors\AutoCompleteTextBox.cs">
       <DependentUpon>AutoCompleteTextBox.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Editors\AutoCompleteTextBox.Designer.cs">
+    <Compile Include="Editors\AutoCompleteTextBox.Part.cs">
       <DependentUpon>AutoCompleteTextBox.xaml</DependentUpon>
     </Compile>
     <Compile Include="Editors\BindingEvaluator.cs" />
     <Compile Include="Editors\ISuggestionProvider.cs" />
+    <Compile Include="Editors\SelectionAdapter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RxUtils\ISuspendableObservable.cs" />
     <Compile Include="RxUtils\ObservableExtensions.cs" />
