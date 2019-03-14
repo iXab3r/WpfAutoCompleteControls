@@ -15,16 +15,8 @@
 
         public SelectionAdapter(Control editor, Selector itemsSelector)
         {
-            if (editor == null)
-            {
-                throw new ArgumentNullException(nameof(editor));
-            }
-            if (itemsSelector == null)
-            {
-                throw new ArgumentNullException(nameof(itemsSelector));
-            }
-            this.editor = editor;
-            this.itemsSelector = itemsSelector;
+            this.editor = editor ?? throw new ArgumentNullException(nameof(editor));
+            this.itemsSelector = itemsSelector ?? throw new ArgumentNullException(nameof(itemsSelector));
 
             var selectedItemChanged = Observable
                .FromEventPattern<SelectionChangedEventHandler, EventArgs>(x => itemsSelector.SelectionChanged += x, x => itemsSelector.SelectionChanged -= x)
@@ -55,43 +47,32 @@
 
         private void ItemsSelectorOnPreviewKeyDown(Selector itemsSelector, KeyEventArgs keyEventArgs)
         {
-            if (!true)
+            if (keyEventArgs.Key == Key.Down)
             {
-                if (keyEventArgs.Key == Key.Down || keyEventArgs.Key == Key.Up)
-                {
-                    keyEventArgs.Handled = true;
-                }
+                IncrementSelection(itemsSelector);
+                keyEventArgs.Handled = true;
             }
-            else
+            else if (keyEventArgs.Key == Key.Up)
             {
-                if (keyEventArgs.Key == Key.Down)
-                {
-                    IncrementSelection(itemsSelector);
-                    keyEventArgs.Handled = true;
-                }
-                else if (keyEventArgs.Key == Key.Up)
-                {
-                    DecrementSelection(itemsSelector);
-                    keyEventArgs.Handled = true;
-                }
-                else if (keyEventArgs.Key == Key.Escape)
-                {
-                    keyEventArgs.Handled = true;
-                }
+                DecrementSelection(itemsSelector);
+                keyEventArgs.Handled = true;
+            }
+            else if (keyEventArgs.Key == Key.Escape)
+            {
+                keyEventArgs.Handled = true;
             }
         }
 
         private void ItemsSelectorOnPreviewKeyDownHandleCommit(Selector itemsSelector, KeyEventArgs keyEventArgs)
         {
-            if (keyEventArgs.Key == Key.Enter)
-            {
-                keyEventArgs.Handled = true;
-                CommitSelection(itemsSelector);
-                return;
-            } else if (keyEventArgs.Key == Key.Tab)
+            if (keyEventArgs.Key == Key.Enter || keyEventArgs.Key == Key.Tab)
             {
                 CommitSelection(itemsSelector);
-            }
+                if (itemsSelector.IsVisible)
+                {
+                    keyEventArgs.Handled = true;
+                }
+            } 
         }
 
         private void CommitSelection(Selector itemsSelector)
@@ -102,7 +83,7 @@
 
         private void IncrementSelection(Selector itemsSelector)
         {
-            if (itemsSelector.Items == null || !itemsSelector.HasItems || itemsSelector.Items.Count < itemsSelector.SelectedIndex)
+            if (!itemsSelector.HasItems || itemsSelector.Items.Count < itemsSelector.SelectedIndex)
             {
                 return;
             }
@@ -111,7 +92,7 @@
 
         private void DecrementSelection(Selector itemsSelector)
         {
-            if (itemsSelector.Items == null || !itemsSelector.HasItems || itemsSelector.SelectedIndex <= 0)
+            if (!itemsSelector.HasItems || itemsSelector.SelectedIndex <= 0)
             {
                 return;
             }
