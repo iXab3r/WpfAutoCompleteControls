@@ -83,9 +83,13 @@
 
         private void ItemsSelectorOnPreviewKeyDownHandleCommit(Selector itemsSelector, KeyEventArgs keyEventArgs)
         {
-            if (keyEventArgs.Key == Key.Tab || keyEventArgs.Key == Key.Enter)
+            if (keyEventArgs.Key == Key.Enter)
             {
                 keyEventArgs.Handled = true;
+                CommitSelection(itemsSelector);
+                return;
+            } else if (keyEventArgs.Key == Key.Tab)
+            {
                 CommitSelection(itemsSelector);
             }
         }
